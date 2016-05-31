@@ -50,10 +50,12 @@ goog.require('ga_permalink');
 
             // the copy link for the iframe-preview is refreshed
             // according to the preview changes
-            var previewFrame = document.getElementById('previewFrame');
+            var previewFrame;
+            [previewFrame] = angular.element(document).find('iframe');
             if (previewFrame) {
               var url = previewFrame.contentWindow.location.href;
-              var myframe = $($('.ga-embed-input')[1].value)[0];
+              var frame = $('.ga-embed-input')[1].value;
+              var myframe = $(frame)[0];
               myframe.src = url;
               $('.ga-embed-input')[1].value = myframe.outerHTML;
             }
