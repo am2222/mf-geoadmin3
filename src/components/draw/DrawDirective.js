@@ -2,6 +2,7 @@ goog.provide('ga_draw_directive');
 
 goog.require('ga_exportkml_service');
 goog.require('ga_filestorage_service');
+goog.require('ga_iframe_com_service');
 goog.require('ga_map_service');
 goog.require('ga_measure_service');
 goog.require('ga_permalink');
@@ -10,6 +11,7 @@ goog.require('ga_permalink');
   var module = angular.module('ga_draw_directive', [
     'ga_exportkml_service',
     'ga_filestorage_service',
+    'ga_iframe_com_service',
     'ga_map_service',
     'ga_measure_service',
     'ga_permalink',
@@ -30,8 +32,8 @@ goog.require('ga_permalink');
   module.directive('gaDraw',
     function($timeout, $translate, $window, $rootScope, gaBrowserSniffer,
         gaDefinePropertiesForLayer, gaDebounce, gaFileStorage, gaLayerFilters,
-        gaExportKml, gaMapUtils, gaPermalink, gaUrlUtils,
-        $document, gaMeasure) {
+        gaExportKml, gaMapUtils, gaPermalink, gaUrlUtils, $document, gaMeasure,
+        gaIFrameCom) {
 
       var createDefaultLayer = function(map, useTemporaryLayer) {
         // #2820: we set useSpatialIndex to false to allow display of azimuth
@@ -865,6 +867,8 @@ goog.require('ga_permalink');
                 layer.url = data.fileUrl;
                 layer.id = 'KML||' + layer.url;
               }
+
+              gaIFrameCom.send('savedDrawing', layer.url);
 
               if (!scope.adminShortenUrl) {
                 updateShortenUrl(layer.adminId);
