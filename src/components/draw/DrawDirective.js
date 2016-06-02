@@ -868,7 +868,7 @@ goog.require('ga_permalink');
                 layer.id = 'KML||' + layer.url;
               }
 
-              gaIFrameCom.send('savedDrawing', layer.url);
+              gaIFrameCom.send('gaSavedDrawing', layer.url);
 
               if (!scope.adminShortenUrl) {
                 updateShortenUrl(layer.adminId);

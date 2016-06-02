@@ -1,9 +1,11 @@
 goog.provide('ga_permalink_service');
 
+goog.require('ga_identify_service');
 goog.require('ga_urlutils_service');
 (function() {
 
   var module = angular.module('ga_permalink_service', [
+    'ga_iframe_com_service',
     'ga_urlutils_service'
   ]);
 
@@ -43,13 +45,15 @@ goog.require('ga_urlutils_service');
    * - getParams Get the search params.
    * - updateParams Update the search params.
    * - deleteParam Delete a search param.
+goog.require('ga_identify_service');
    *
    * updateParams and deleteParam should be called during a digest cycle.
    * If the browser supports the history API the link in the address bar
    * is updated.
    */
   module.provider('gaPermalink', function() {
-    this.$get = function($window, $rootScope, gaHistory, gaUrlUtils) {
+    this.$get = function($window, $rootScope, gaHistory, gaUrlUtils,
+                    gaIFrameCom) {
 
         var Permalink = function(b, p) {
           var base = b;
@@ -124,6 +128,7 @@ goog.require('ga_urlutils_service');
               lastHref = newHref;
               gaHistory.replaceState(null, '', newHref);
               $rootScope.$broadcast('gaPermalinkChange');
+              gaIFrameCom.send('gaPermalinkChange', permalink.getParams());
             });
           }
         });

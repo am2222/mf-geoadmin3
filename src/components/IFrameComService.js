@@ -24,7 +24,7 @@ goog.provide('ga_iframe_com_service');
           return stringsOnly;
         };
 
-        this.send = function(type, data, targetOrigin) {
+        this.send = function(type, payload, targetOrigin) {
           if (!targetOrigin) {
             targetOrigin = '*';
           }
@@ -32,7 +32,7 @@ goog.provide('ga_iframe_com_service');
           if (top != window) {
             var msg = {
               type: type,
-              data: data
+              payload: payload
             };
             if (stringsOnly) {
               msg = JSON.stringify(msg);

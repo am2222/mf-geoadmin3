@@ -579,7 +579,10 @@ goog.require('ga_topic_service');
               showFeatures([feature]);
 
               // Iframe communication from inside out
-              gaIFrameCom.send('featureSelection', id);
+              gaIFrameCom.send('gaFeatureSelection', {
+                layerId: layerId,
+                featureId: featureId
+              });
 
               // We leave the old code to not break existing clients
               // Once they have adapted to new implementation, we
