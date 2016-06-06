@@ -31,6 +31,12 @@ goog.require('ga_urlutils_service');
           origin: origin,
           resolutions: resolutions
         });
+      } else if (type == 'mvt') {
+        return new ol.tilegrid.TileGrid({
+          origin: origin,
+          extent: [420000, 30000, 900000, 350000],
+          resolutions: resolutions.slice(0, 24)
+        });
       }
       return new ol.tilegrid.WMTS({
           matrixIds: $.map(resolutions, function(r, i) { return i + ''; }),
@@ -523,6 +529,25 @@ goog.require('ga_urlutils_service');
                 attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
                     'swisstopo/' + lang + '/home.html'
               };
+              // MVT hardcored config for now
+              response.data['ch.swisstopo.' +
+                  'swissboundaries3d-gemeinde-flaeche.fill'] = {
+                type: 'mvt',
+                serverLayerName: '',
+                selectbyrectangle: false,
+                tooltip: true,
+                highlightable: true,
+                background: false,
+                searchable: false,
+                serverLayerName: 'ch.swisstopo.' +
+                    'swissboundaries3d-gemeinde-flaeche.fill',
+                attributionUrl: 'http://www.swisstopo.admin.ch/internet/' +
+                    'swisstopo/fr/home.html',
+                label: 'Limites de commune',
+                timestamps: ['current'],
+                hasLegend: true,
+                timeEnabled: false
+              };
             }
             if (!layers) { // First load
               layers = response.data;
@@ -835,6 +860,20 @@ goog.require('ga_urlutils_service');
             if (!layer.updateDelay) {
               setLayerSource();
             }
+          } else if (layer.type == 'mvt') {
+            var url = 'https://vectortiles.dev.bgdi.ch/2.1.0/' +
+                'ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/' +
+                '21781/default/current/{z}/{x}/{y}.pbf';
+            olSource = new ol.source.VectorTile({
+              format: new ol.format.MVT(),
+              tileGrid: gaTileGrid.get(layer.resolutions,
+                  layer.minResolution, 'mvt'),
+              tilePixelRatio: 16,
+              url: url
+            });
+            olLayer = new ol.layer.VectorTile({
+              source: olSource
+            });
           }
           if (angular.isDefined(olLayer)) {
             gaDefinePropertiesForLayer(olLayer);
